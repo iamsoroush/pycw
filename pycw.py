@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn.base import BaseEstimator, ClusterMixin
-from sklearn.metrics.pairwise import euclidean_distances
+from sklearn.metrics.pairwise import euclidean_distances, cosine_similarity
 
 
 class ChineseWhispers(BaseEstimator, ClusterMixin):
@@ -11,7 +11,7 @@ class ChineseWhispers(BaseEstimator, ClusterMixin):
 
     """
 
-    def __init__(self, n_iterations=10):
+    def __init__(self, n_iterations=10, metric='euclidean'):
         """Init an estimator object.
 
         Parameters
@@ -30,6 +30,7 @@ class ChineseWhispers(BaseEstimator, ClusterMixin):
 
         """
         self.n_iterations = n_iterations
+        self.metric = metric
         self.labels_ = None
         self.adjacency_mat_ = None
 
@@ -45,13 +46,20 @@ class ChineseWhispers(BaseEstimator, ClusterMixin):
 
         """
 
+        available_metrics = ['euclidean', 'cosine']
         assert isinstance(self.n_iterations, int), "parameter n_iterations must be of type int"
         assert isinstance(X, np.ndarray), "X must be an instance of np.ndarray"
         assert X.ndim == 2, "X must be of ndim=2"
+        assert self.metric in available_metrics, "Invalid metric."
         n_samples = X.shape[0]
-        adjacency_mat = (1 / (euclidean_distances(X, X) + np.identity(n_samples, dtype=X.dtype))) *\
-                        (np.ones((n_samples, n_samples), dtype=X.dtype) -
-                         np.identity(n_samples, dtype=X.dtype))
+        if self.metric == 'euclidean':
+            adjacency_mat = (1 / (euclidean_distances(X, X) + np.identity(n_samples, dtype=X.dtype))) *\
+                            (np.ones((n_samples, n_samples), dtype=X.dtype) -
+                             np.identity(n_samples, dtype=X.dtype))
+        else:
+            adjacency_mat = cosine_similarity(X, X) *\
+                            (np.ones((n_samples, n_samples), dtype=X.dtype) -
+                             np.identity(n_samples, dtype=X.dtype))
         indices = np.arange(n_samples)
         labels_mat = np.arange(n_samples)
         for _ in range(self.n_iterations):
