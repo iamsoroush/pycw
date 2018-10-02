@@ -52,16 +52,24 @@ class ChineseWhispers(BaseEstimator, ClusterMixin):
         adjacency_mat = (1 / (euclidean_distances(X, X) + np.identity(n_samples, dtype=X.dtype))) *\
                         (np.ones((n_samples, n_samples), dtype=X.dtype) -
                          np.identity(n_samples, dtype=X.dtype))
-        labels_mat = np.identity(n_samples, dtype=np.int8)
+        indices = np.arange(n_samples)
+        labels_mat = np.arange(n_samples)
         for _ in range(self.n_iterations):
-            for i in range(n_samples):
-                labels_mat[i, :] = self.maxrow(np.dot(labels_mat[i, :], adjacency_mat))
+            np.random.shuffle(indices)
+            for ind in indices:
+                weights = adjacency_mat[ind]
+                unique_labels = list(set(labels_mat))
+                label_weights = np.zeros(len(unique_labels))
+                for i, label in enumerate(unique_labels):
+                    args = np.where(labels_mat == label)[0]
+                    label_weights[i] = np.sum(weights[args])
+                labels_mat[ind] = unique_labels[np.argmax(label_weights)]
         self.adjacency_mat_ = adjacency_mat
-        self.labels_ = np.where(labels_mat == 1)[1]
-        return self.labels_
+        self.labels_ = labels_mat
+        return labels_mat
 
     @staticmethod
-    def maxrow(self, row):
+    def maxrow(row):
         """Returns a sparse vector of same size as input vector,
         containing zeros except for maximum element, which is 1."""
 
