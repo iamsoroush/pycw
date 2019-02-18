@@ -1,6 +1,6 @@
 # pycw
-Python implementation of Chinese Whispers clustering algorithm, compatible with scikit-learn.
+Python implementation for ChineseWhispers clustering algorithm, compatible with scikit-learn.
 
 
 # Usage
-A simple usage example implemented in file 'pycw_exampl.ipynb' .
+A simple usage example can be found on file 'pycw_exampl.ipynb' .
