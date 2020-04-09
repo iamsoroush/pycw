@@ -5,6 +5,13 @@ Python implementation of [Chinese-Whispers](https://www.researchgate.net/publica
 The main strength of Chinese Whispers lies in its time linear property. This algorithm works fine for complex clustering problems such as face clustering, which have a high dimensionality in representation space and consists of an unknown number of clusters. Furthermore, it relies only on two parameters which can easily optimised.
 
 
+# Requirements:
+```
+1. numpy
+2. scikit-learn
+```
+
+
 # Usage
 Just like a sklearn estimator, do the following:
 ```python
