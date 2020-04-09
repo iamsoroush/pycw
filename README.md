@@ -9,6 +9,7 @@ The main strength of Chinese Whispers lies in its time linear property. This alg
 Just like a sklearn estimator, do the following:
 ```python
 from pycw import ChineseWhispers
+
 es = ChineseWhispers(n_iteration=2, metric='euclidean')
 predicted_labels = es.fit_predict(X)
 ```
